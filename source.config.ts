@@ -1,7 +1,6 @@
-import { defineDocs, defineConfig, frontmatterSchema } from 'fumadocs-mdx/config';
+import { defineDocs, defineConfig } from 'fumadocs-mdx/config';
 import { remarkMdxMermaid, remarkCodeTab } from 'fumadocs-core/mdx-plugins';
 import { remarkStripMdExtension } from './src/lib/remark-strip-md-extension';
-import { z } from 'zod';
 
 const neonLagoonDark = {
   name: 'neon-lagoon-dark',
@@ -107,21 +106,6 @@ const neonLagoonLight = {
 
 export const docs = defineDocs({
   dir: 'content/docs',
-});
-
-export const blog = defineDocs({
-  dir: 'content/blog',
-  docs: {
-    schema: frontmatterSchema.extend({
-      date: z.coerce.date(),
-      author: z.object({
-        name: z.string(),
-        avatar: z.string(),
-      }),
-      tags: z.array(z.string()).optional().default([]),
-      atUri: z.string().optional(),
-    }),
-  },
 });
 
 export default defineConfig({

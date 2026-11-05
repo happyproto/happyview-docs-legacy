@@ -24,8 +24,7 @@ export const navLinks: LinkItemType[] = [
   },
   {
     text: 'Blog',
-    url: '/blog',
-    active: 'nested-url',
+    url: 'https://happyview.dev/blog/',
   },
   {
     text: 'Source',
