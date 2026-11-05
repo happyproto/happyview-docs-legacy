@@ -5,14 +5,11 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "generate-changelogs": "node scripts/generate-changelogs.mjs",
-    "sequoia:publish": "node scripts/sequoia-publish.mjs",
-    "build": "npm run generate-changelogs && npm run sequoia:publish && next build",
+    "build": "npm run generate-changelogs && next build",
     "start": "next start"
   },
   "dependencies": {
-    "@atproto/api": "^0.20.25",
-    "@atproto/oauth-client-browser": "^0.4.5",
-    "@happyview/design-system": "workspace:*",
+    "@happyview/design-system": "file:./design-system",
     "@tailwindcss/postcss": "^4.2.0",
     "@types/mdast": "^4.0.4",
     "@types/mdx": "^2.0.13",
@@ -27,12 +24,17 @@
     "react-dom": "^19.2.0",
     "tailwindcss": "^4.2.0",
     "unist-util-visit": "^5.1.0",
-    "sequoia-cli": "^0.5.7",
     "zod": "^4.4.3"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "typescript": "^5.7.0"
+  },
+  "overrides": {
+    "webpack": "5.97.1"
+  },
+  "resolutions": {
+    "webpack": "5.97.1"
   }
 }

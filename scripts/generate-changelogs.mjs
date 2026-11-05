@@ -7,7 +7,7 @@ const CHANGELOGS = [
   {
     name: "HappyView",
     output: "content/docs/reference/changelog.md",
-    match: (tag) => /^v\d/.test(tag),
+    match: (tag) => /^v2\./.test(tag),
     formatVersion: (tag) => tag,
   },
   {
