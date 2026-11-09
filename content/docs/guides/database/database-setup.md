@@ -48,6 +48,35 @@ HappyView runs migrations automatically on startup for both backends.
 |----------|-------------|
 | `DATABASE_URL` | Connection string. `sqlite://...` for SQLite, `postgres://...` for Postgres |
 | `DATABASE_BACKEND` | Optional. Force `sqlite` or `postgres`. Auto-detected from `DATABASE_URL` if not set |
+| `PLUGIN_SQL_DATABASE_URL` | Optional, Postgres only. Runs Lua `db.raw` as the unprivileged `happyview_plugin` role. See [Least-privileged `db.raw`](#least-privileged-dbraw-postgres) |
+
+## Least-privileged `db.raw` (Postgres)
+
+On Postgres, run Lua `db.raw` as its own unprivileged database role. `db.raw` then runs on a separate connection pool that logs in as `happyview_plugin`. That role is granted only the tables `db.raw` may use (see [Protected tables](../../api-reference/lua/database-api.md#protected-tables)), so the database itself refuses anything else. We recommend it for every Postgres instance whose scripts use `db.raw`. SQLite needs no setup.
+
+1. Create the login role in HappyView's database. Don't grant it any role or privilege yourself: HappyView grants exactly what it needs at boot, and refuses a role that holds more.
+
+   ```sql
+   CREATE ROLE happyview_plugin LOGIN PASSWORD '<a long random password>';
+   ```
+
+2. Point HappyView at it, using the same host and database as `DATABASE_URL`:
+
+   ```sh
+   PLUGIN_SQL_DATABASE_URL=postgres://happyview_plugin:<password>@localhost/happyview
+   ```
+
+3. Restart HappyView. The boot log says `db.raw runs on the dedicated login pool` once it's in use.
+
+At boot, HappyView creates a `happyview_plugin` schema and grants the role the allowed tables, plus the tables your scripts created in `public` before this was set up. Tables a script creates from then on go in the `happyview_plugin` schema, which `db.raw` searches first. Name them without the `happyview_` prefix: `db.raw` refuses to run while that schema holds a table named `happyview_…`, until you drop it.
+
+HappyView checks the role before using it. It refuses a role that is a superuser, can create roles or databases, is HappyView's own database role, is a member of any role, can read a protected table, or can create in `public`.
+
+<Callout type="warn" title="A set but unusable URL turns db.raw off">
+If `PLUGIN_SQL_DATABASE_URL` is set but HappyView can't connect with it, or the role fails those checks, HappyView refuses `db.raw` rather than falling back to its main connection. The rest of HappyView keeps running. The boot log says why. Fix the role or the URL and restart.
+</Callout>
+
+Without `PLUGIN_SQL_DATABASE_URL`, `db.raw` runs on HappyView's main connection behind the [protected-table check](../../api-reference/lua/database-api.md#protected-tables), as before.
 
 ## Docker Compose
 
