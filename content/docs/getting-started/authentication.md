@@ -380,6 +380,13 @@ For public clients, omit `X-Client-Secret` and include the PKCE verifier in the 
 }
 ```
 
+From 2.17.4, HappyView confirms the scopes with the user's authorization server. When `scopes` holds anything beyond `atproto`:
+- HappyView checks that the user's PDS lists `issuer` as its authorization server. If it doesn't, the registration answers `403`.
+- HappyView refreshes the session once at `issuer` and reads the scope it reports. A registration that asks for more than that answers `400`, naming the scopes that weren't granted, and no session is kept.
+- `refresh_token` is required. Without one there is nothing to confirm with, so the session may hold only `atproto`.
+
+That refresh replaces the tokens you sent. From then on HappyView holds the session's only working tokens and refreshes them itself, so don't keep using or refreshing your own copy after you register. The SDK clients work this way already.
+
 Response:
 
 ```json
