@@ -190,6 +190,8 @@ Available internal tables:
 
 Space data is available because a space defines *access*, not confidentiality; if you need record data without exposing internals, the structured accessors [`db.query`](#dbquery), [`db.get`](#dbget), and [`db.count`](#dbcount) are the backend-portable option.
 
+On Postgres, set up [least-privileged `db.raw`](../../guides/database/database-setup.md#least-privileged-dbraw-postgres) so the database also enforces this list. With it, tables `db.raw` creates go in the `happyview_plugin` schema.
+
 ### SQL dialect
 
 Unlike the structured API methods (`db.query`, `db.get`, etc.), `db.raw` does **not** translate SQL between backends. Write native SQL for the database you're running against — `$1`/`$2` placeholders for Postgres, `?` for SQLite. Use `db.backend()` to branch when you need to support both.
