@@ -52,7 +52,7 @@ HappyView runs migrations automatically on startup for both backends.
 
 ## Least-privileged `db.raw` (Postgres)
 
-From 2.17.1, on Postgres, you can run Lua `db.raw` as its own unprivileged database role. `db.raw` then runs on a separate connection pool that logs in as `happyview_plugin`. That role is granted only the tables `db.raw` may use (see [Protected tables](../../api-reference/lua/database-api.md#protected-tables)), so the database itself refuses anything else. We recommend it for every Postgres instance whose scripts use `db.raw`. SQLite needs no setup.
+From 2.17.3, on Postgres, you can run Lua `db.raw` as its own unprivileged database role. `db.raw` then runs on a separate connection pool that logs in as `happyview_plugin`. That role is granted only the tables `db.raw` may use (see [Protected tables](../../api-reference/lua/database-api.md#protected-tables)), so the database itself refuses anything else. We recommend it for every Postgres instance whose scripts use `db.raw`. SQLite needs no setup.
 
 1. Create the login role in HappyView's database. Don't grant it any role or privilege yourself: HappyView grants exactly what it needs at boot, and refuses a role with role memberships or extra privileges like these.
 
