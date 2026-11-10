@@ -60,6 +60,15 @@ From 2.17.3, on Postgres, you can run Lua `db.raw` as its own unprivileged datab
    CREATE ROLE happyview_plugin LOGIN PASSWORD '<a long random password>';
    ```
 
+   On PostgreSQL 14 or earlier, every role can create in the `public` schema by default, and HappyView refuses a login role that can. Remove that default, keeping it for HappyView's own role (the one in `DATABASE_URL`):
+
+   ```sql
+   REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+   GRANT CREATE ON SCHEMA public TO <HappyView's database role>;
+   ```
+
+   PostgreSQL 15 and later already work this way.
+
 2. Point HappyView at it, using the same host and database as `DATABASE_URL`:
 
    ```sh
