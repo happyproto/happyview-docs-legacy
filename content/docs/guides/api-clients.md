@@ -476,6 +476,8 @@ There is no flag anywhere marking your client confidential — the PDS decides b
 
 After the OAuth callback, register the token set with HappyView so it can proxy requests on behalf of the user.
 
+HappyView confirms any scope beyond `atproto` with the user's authorization server by refreshing the session once, and refuses the registration if you ask for more than was granted. Send the `refresh_token` and the `issuer`, and after registering leave the tokens to HappyView. See [Register the session](../getting-started/authentication.md#3-register-the-session).
+
 **Confidential client:**
 
 ```http
